@@ -4,19 +4,21 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.graphics.Color;
-
+import android.graphics.drawable.Drawable;
 import com.android.riktamtech.drivingdirections.DrawRoutePath;
+import com.android.riktamtech.drivingdirections.MapLoaction;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
+
 public class MainActivity extends MapActivity {
-	ArrayList<GeoPoint> points =new ArrayList<GeoPoint>();
+	ArrayList<GeoPoint> points = new ArrayList<GeoPoint>();
 	DrawRoutePath drawRoutePath;
-	ArrayList<String> drivingDirections=new ArrayList<String>();
-	ArrayList<String> drivingDistance=new ArrayList<String>();
+	ArrayList<String> drivingDirections = new ArrayList<String>();
+	ArrayList<String> drivingDistance = new ArrayList<String>();
 	MapView map;
 
-    @Override
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -26,6 +28,7 @@ public class MainActivity extends MapActivity {
         GeoPoint point1 = new GeoPoint((int)(12.9833*1E6),(int)(77.5833*1E6));
         points.add(point);
         points.add(point1);
+       Drawable drawable = getResources().getDrawable(R.drawable.pin_blue);
         for(int i=0;i<points.size()-1;i++){
         	//we need to pass the parameters as starting point, destination point,colour of map,map view,index,type of path
         	//if you want walking directions send it as "isWalkPath"
@@ -35,18 +38,19 @@ public class MainActivity extends MapActivity {
         	//if you want driving directions send it as null
         	
         	drawRoutePath=new DrawRoutePath(points.get(i), points.get(i+1), Color.BLUE, map , i,"isWalkPath");
-        	 drivingDirections.addAll(drawRoutePath.getDrivingDirections());
+        	//if you want to set a pin for the geo-points
+        	map.getOverlays().add(new MapLoaction(drawable,(int)(points.get(i).getLatitudeE6()), (int)(points.get(i).getLongitudeE6())));
+        	drivingDirections.addAll(drawRoutePath.getDrivingDirections());
         	 drivingDistance.add(drawRoutePath.getDistanceBetweenPoints());
         }
     }
-//this method is used to display the path
+
+	// this method is used to display the path
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
 		return true;
 	}
 
-    
-
-    
 }
+
